@@ -1,8 +1,6 @@
 
 import logo from './logo.svg';
 import './App.css';
-// import Hello from './Hello.jsx';
-// import Job from './Job'
 
 import Product from './Product';
 
@@ -15,11 +13,12 @@ function App() {
       
       <header className="App-header">
 
-        <Product  price = "1$"  name = "bananas" description = "fresh bananas"/>
+        <Product  price = "5$"  name = "bananas" description = "fresh bananas"/>
+        
+        <Product  price = "780֏"  name = "apple" description = "fresh apple"/>
         
 
-       {/* <Hello name = "Ann" age = {20}/>
-        <Job job="logistik"/>  */}
+      
         <img src={logo} className="App-logo" alt="logo" />
         
         

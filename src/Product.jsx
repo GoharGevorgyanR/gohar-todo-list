@@ -9,9 +9,10 @@ class Product extends Component{
         return (
         <div>
             
-            <Name name = {this.props.name} />
-            <Price price = {this.props.price} />
-            <Description description = {this.props.description}/>
+            <Name text = {this.props.name} />
+            <Price text = {this.props.price} />
+            <Description text = {this.props.description}/>
+            <hr />
 
         </div>
         )

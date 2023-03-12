@@ -5,9 +5,9 @@ class Description extends Component{
 
     render(){
         return (
-        <h3>
-            {this.props.description}
-        </h3>
+        <div>
+            {this.props.text}
+        </div>
         )
     }
 
