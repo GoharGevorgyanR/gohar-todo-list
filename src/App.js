@@ -1,9 +1,8 @@
 
-import logo from './logo.svg';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-
-import Product from './Product';
-
+import ToDo from './ToDo';
 
 
 
@@ -13,23 +12,8 @@ function App() {
       
       <header className="App-header">
 
-        <Product  price = "5$"  name = "bananas" description = "fresh bananas"/>
-        
-        <Product  price = "780֏"  name = "apple" description = "fresh apple"/>
-        
-
-      
-        <img src={logo} className="App-logo" alt="logo" />
-        
-        
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <ToDo/>       
+       
       </header>
     </div>
   );
