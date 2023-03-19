@@ -2,20 +2,16 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import ToDo from './ToDo';
-
+import ToDo from './components/ToDo';
 
 
 function App() {
-  return (
-    <div className="App">
-      
-      <header className="App-header">
+  return ( 
 
-        <ToDo/>       
-       
-      </header>
-    </div>
+    <main>   
+           <ToDo/>      
+    </main> 
+    
   );
 }
 
