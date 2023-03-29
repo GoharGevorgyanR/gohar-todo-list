@@ -96,7 +96,7 @@ class ToDo extends Component {
                 <Container>
                     <Row>
                         <Col>
-                            <div class="title" >
+                            <div className="title" >
                                 <h2>To Do List</h2>
                             </div>
 

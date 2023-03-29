@@ -10,6 +10,17 @@ margin-bottom: 10px;
 text-align: center;
 }
 
+.counter{
+  text-align: center;
+}
+.counter button{
+  margin: 20px;
+}
+
+.counter h3{
+  color: red;
+}
+
 
 
 

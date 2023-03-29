@@ -2,14 +2,17 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import ToDo from './components/todo/ToDo';
+import Counter from './components/Counter';
+//import ToDo from './components/todo/ToDo';
 
 
 function App() {
   return ( 
 
     <main>   
-           <ToDo/>      
+           {/* <ToDo/>   */}
+           <Counter/>
+
     </main> 
     
   );
