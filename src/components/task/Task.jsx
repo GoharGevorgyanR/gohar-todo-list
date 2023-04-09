@@ -1,3 +1,4 @@
+import {memo} from 'react';
 import { Col, Form, Button, Card } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPen } from '@fortawesome/free-solid-svg-icons';
@@ -11,7 +12,7 @@ function Task(props) {
             <Card className='mb-2 mt-2'>
                 <Card.Body>
                     <Form.Check className={styles.checkBox}
-                    onClick={()=>props.onTaskSelect(task.id)}
+                    onClick={()=>props.onTaskSelect(task._id)}
                     />
                 
                     <Card.Title>{task.title}</Card.Title>
@@ -24,9 +25,11 @@ function Task(props) {
                         </Button>
                         <Button variant="danger" 
                         className={styles.deleteButton}
-                        onClick={()=>{
-                            props.onTaskDelete(task.id);
+                         onClick={()=>{                            
+                            props.onTaskDelete(task._id);
+                            
                         }}
+                        
                         >
                             <FontAwesomeIcon icon={faTrashAlt} />
                         </Button>
@@ -37,4 +40,4 @@ function Task(props) {
     )
 }
 
-export default Task
+export default memo(Task);

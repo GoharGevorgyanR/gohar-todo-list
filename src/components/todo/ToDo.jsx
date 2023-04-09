@@ -1,157 +1,166 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col, InputGroup, Form, Button, Card } from 'react-bootstrap';
-import { idGenerator } from '../../utils/helpers';
+import { Container, Row, Col, InputGroup, Form, Button } from 'react-bootstrap';
 import Task from '../task/Task';
-import styles from './todo.module.css'
+import styles from './todo.module.css';
+import ConfirmDialog from '../ConfirmDialog';
 
 
+function ToDo() {
+    const [tasks, setTasks] = useState([]);
+    const [newTaskTitle, setNewTaskTitle] = useState('');
+    const [selectedTasks, setSelectedTasks] = useState(new Set());
+    const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
-class ToDo extends Component {
-    state = {
-        tasks: [],
-        newTask: "",
-        selectedTasks: new Set(),
+
+    const handleInputChenge = (event) => {
+        setNewTaskTitle(event.target.value);
     };
 
-    handleInputChenge = (event) => {
-        const newTask = event.target.value;
-        this.setState({
-            newTask
-        })
-    };
-
-    handleInputKeyDown = (event) => {
+    const handleInputKeyDown = (event) => {
         if (event.code === 'Enter') {
-            this.addNewTask();
+            addNewTask();
         }
     };
 
-    addNewTask = () => {
-        if (this.state.newTask.trim() === '') {
+    const addNewTask = () => {
+        const trimmedTitle = newTaskTitle.trim();
+        if (trimmedTitle === '') {
             return;
         }
+
+        const apiUrl = 'http://localhost:3001/task';
+
         const newTask = {
-            id: idGenerator(),
-            title: this.state.newTask
+            title: trimmedTitle,
         };
-        const tasks = [...this.state.tasks];
-        tasks.push(newTask);
-        this.setState({
-            tasks,
-            newTask: '',
-        });
+
+        fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newTask),
+        })
+            .then((result) => result.json())
+            .then((task) => {
+                const tasksCopy = [...tasks];
+                tasksCopy.push(task);
+                setTasks(tasksCopy);
+                setNewTaskTitle('');
+            })
     };
 
-    onTaskDelete = (taskId) => {
-        const { selectedTasks, tasks } = this.state;
-        const newTasks = this.state.tasks.filter(task => task.id !== taskId);
+    const onTaskDelete = (taskId) => {
+        const newTasks = tasks.filter(task => task._id !== taskId);
+        setTasks(newTasks);
 
-        const newState = {
-            tasks: newTasks
-        };
 
         if (selectedTasks.has(taskId)) {
             const newSelectedTasks = new Set(selectedTasks);
             newSelectedTasks.delete(taskId);
-            newState.selectedTasks = newSelectedTasks;
+            setSelectedTasks(newSelectedTasks);
         }
-        this.setState(newState);
     };
 
-    onTaskSelect = (taskId) => {
-        const selectedTasks = new Set(this.state.selectedTasks);
-        if (selectedTasks.has(taskId)) {
-            selectedTasks.delete(taskId);
+    const onTaskSelect = (taskId) => {
+        const selectedTasksCopy = new Set(selectedTasks);
+        if (selectedTasksCopy.has(taskId)) {
+            selectedTasksCopy.delete(taskId);
         }
         else {
-            selectedTasks.add(taskId)
+            selectedTasksCopy.add(taskId);
         }
-        this.setState({
-            selectedTasks
-        });
+        setSelectedTasks(selectedTasksCopy);
     };
 
-    deleteSelectedTasks = () => {
-        const newTasks = [];
-        const { selectedTasks, tasks } = this.state;
+    const deleteSelectedTasks = () => {
+        const newTasks = [];        
 
         tasks.forEach((task) => {
-            if (!selectedTasks.has(task.id)) {
+            if (!selectedTasks.has(task._id)) {
                 newTasks.push(task);
             }
         });
-        this.setState({
-            tasks: newTasks,
-            selectedTasks: new Set(),
-        })
+        setTasks(newTasks)
+        setSelectedTasks(new Set());
+        setIsConfirmDialogOpen(false);        
     };
 
+    const toggleConfirmDialog = () => {
+        setIsConfirmDialogOpen(!isConfirmDialogOpen)
+        
+    };
+    
+
+    return (
+        <div>
+            <Container>
+                <Row>
+                    <Col>
+                        <div className="title" >
+                            <h2>To Do List</h2>
+                        </div>
+
+                    </Col>
+                </Row>
+
+                <Row >
+                    <Col xs="12" sm="8" md="6">
+
+                        <InputGroup className="mb-3 mt-2">
+                            <Form.Control
+                                placeholder="Input task title"
+                                onChange={handleInputChenge}
+                                onKeyDown={handleInputKeyDown}
+                                value={newTaskTitle}
+                            />
+                            <Button
+                                variant="success"
+                                onClick={addNewTask}
+                                disabled={!newTaskTitle.trim()}
+                            >
+                                Add
+                            </Button>
+                        </InputGroup>
+                    </Col>
+                </Row>
+
+                <Row>
+                    {tasks.map((task) => {
+                        return (
+                            <Task
+                                key={task._id}
+                                data={task}
+                                onTaskDelete={onTaskDelete}
+                                onTaskSelect={onTaskSelect}
+                            />
+                        )
+                    })}
+                </Row>
+
+                <Button
+                    className={styles.deleteSelected}
+                    variant="danger"
+                    onClick={toggleConfirmDialog}
+                    disabled={!selectedTasks.size}
+                >
+                    Delete selected
+                </Button>
+
+                {isConfirmDialogOpen &&
+                    <ConfirmDialog
+                        tasksCount={selectedTasks.size}
+                        onCancel={toggleConfirmDialog}
+                        onSubmit={deleteSelectedTasks} />
+                }
 
 
+            </Container>
 
-    render() {
-        return (
-            <div>
-                <Container>
-                    <Row>
-                        <Col>
-                            <div className="title" >
-                                <h2>To Do List</h2>
-                            </div>
-
-                        </Col>
-                    </Row>
-
-                    <Row >
-                        <Col xs="12" sm="8" md="6">
-
-                            <InputGroup className="mb-3 mt-2">
-                                <Form.Control
-                                    placeholder="Input task title"
-                                    onChange={this.handleInputChenge}
-                                    onKeyDown={this.handleInputKeyDown}
-                                    value={this.state.newTask}
-                                />
-                                <Button
-                                    variant="success"
-                                    onClick={this.addNewTask}
-                                    disabled={!this.state.newTask.trim()}
-                                >
-                                    Add
-                                </Button>
-                            </InputGroup>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        {this.state.tasks.map((task) => {
-                            return (
-                                <Task
-                                    key={task.id}
-                                    data={task}
-                                    onTaskDelete={this.onTaskDelete}
-                                    onTaskSelect={this.onTaskSelect} />
-                            )
-                        })}
-                    </Row>
-
-                    <Button
-                        className={styles.deleteSelected}
-                        variant="danger"
-                        onClick={this.deleteSelectedTasks}
-                        disabled={!this.state.selectedTasks.size}
-                    >
-                        Delete selected
-                    </Button>
-
-
-                </Container>
-
-
-            </div>
-        )
-    }
+        </div>
+    )
 }
+
 
 export default ToDo
