@@ -1,8 +1,9 @@
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "react-datepicker/dist/react-datepicker.css";
 import './App.css';
-//import Counter from './components/Counter';
+import 'react-toastify/dist/ReactToastify.css';
 import ToDo from './components/todo/ToDo';
 
 
