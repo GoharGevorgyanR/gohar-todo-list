@@ -13,38 +13,20 @@ const taskApi = new TaskApi();
 
 function ToDo() {
     const [tasks, setTasks] = useState([]);
-    //const [newTaskTitle, setNewTaskTitle] = useState('');
     const [selectedTasks, setSelectedTasks] = useState(new Set());
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
     const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
+    const [editableTask, setEditableTask] = useState(null);
 
     useEffect(() => {
-        taskApi.getAll().then((tasks) => {
-            setTasks(tasks);
-        });
-
-        // fetch(apiUrl+'/task', {
-        //     method: "GET",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     },
-
-        // })
-        //     .then((result) => result.json())
-        //     .then((tasks) => {            
-        //         setTasks(tasks);            
-        //     })
-    }, []);
-
-      const handleInputChenge = (event) => {
-        // setNewTaskTitle(event.target.value);
-    };
-
-    const handleInputKeyDown = (event) => {
-        if (event.code === 'Enter') {
-            onAddNewTask();
-        }
-    };
+        taskApi.getAll()
+    .then((tasks) => {
+      setTasks(tasks);
+    })
+    .catch((err) => {
+      toast.error(err.message);
+    });
+  }, []);
 
     const onAddNewTask = (newTask) => {
         taskApi.add(newTask)
@@ -57,22 +39,28 @@ function ToDo() {
 
             })
             .catch((err) => {
-                console.log("err", err);
                 toast.error(err.message);
-                
             });
     };
 
     const onTaskDelete = (taskId) => {
-        const newTasks = tasks.filter(task => task._id !== taskId);
-        setTasks(newTasks);
+        taskApi
+            .delete(taskId)
+            .then(() => {
+                const newTasks = tasks.filter((task) => task._id !== taskId);
+                setTasks(newTasks);
 
+                if (selectedTasks.has(taskId)) {
+                    const newSelectedTasks = new Set(selectedTasks);
+                    newSelectedTasks.delete(taskId);
+                    setSelectedTasks(newSelectedTasks);
+                }
 
-        if (selectedTasks.has(taskId)) {
-            const newSelectedTasks = new Set(selectedTasks);
-            newSelectedTasks.delete(taskId);
-            setSelectedTasks(newSelectedTasks);
-        }
+                toast.success("The task has been deleted successfully!");
+            })
+            .catch((err) => {
+                toast.error(err.message);
+            });
     };
 
     const onTaskSelect = (taskId) => {
@@ -87,15 +75,28 @@ function ToDo() {
     };
 
     const deleteSelectedTasks = () => {
-        const newTasks = [];
 
-        tasks.forEach((task) => {
-            if (!selectedTasks.has(task._id)) {
-                newTasks.push(task);
-            }
-        });
-        setTasks(newTasks)
-        setSelectedTasks(new Set());
+        taskApi
+            .deleteMany([...selectedTasks])
+            .then(() => {
+                const newTasks = [];
+                const deletedTasksCount = selectedTasks.size;
+                tasks.forEach((task) => {
+                    if (!selectedTasks.has(task._id)) {
+                        newTasks.push(task);
+                    }
+                });
+                setTasks(newTasks);
+                setSelectedTasks(new Set());
+                toast.success(
+                    `${deletedTasksCount} tasks have been deleted successfully!`
+                );
+            })
+            .catch((err) => {
+                toast.error(err.message);
+            });
+
+
         setIsConfirmDialogOpen(false);
     };
 
@@ -104,7 +105,28 @@ function ToDo() {
 
     };
 
-    let newTaskTitle = "";
+    const selectAllTasks = () => {
+        const taskIds = tasks.map((task) => task._id);
+        setSelectedTasks(new Set(taskIds));
+    };
+
+    const resetSelectedTasks = () => {
+        setSelectedTasks(new Set());
+    };
+
+    //let newTaskTitle = "";
+
+    const onEditTask = (editedTask) => {
+        taskApi
+            .update(editedTask)
+            .then((task) => {
+                toast.success(`Tasks havs been updated successfully!`);
+                setEditableTask(null);
+            })
+            .catch((err) => {
+                toast.error(err.message);
+            });
+    };
 
     return (
         <div>
@@ -118,18 +140,28 @@ function ToDo() {
                     </Col>
                 </Row>
 
-                <Row >
-                    <Col xs="12" sm="8" md="6">
+                <Row className="justify-content-center m-3" >
+                    <Col xs="6" sm="4" md="3">
 
 
                         <Button
                             variant="success"
                             onClick={() => setIsAddTaskModalOpen(true)}
-                        //disabled={!newTaskTitle.trim()}
+
                         >
                             Add new task
                         </Button>
+                    </Col>
 
+                    <Col xs="6" sm="4" md="3">
+                        <Button variant="warning" onClick={selectAllTasks}>
+                            Select all
+                        </Button>
+                    </Col>
+                    <Col xs="6" sm="4" md="3">
+                        <Button variant="secondary" onClick={resetSelectedTasks}>
+                            Reset selected
+                        </Button>
                     </Col>
                 </Row>
 
@@ -141,6 +173,8 @@ function ToDo() {
                                 data={task}
                                 onTaskDelete={onTaskDelete}
                                 onTaskSelect={onTaskSelect}
+                                checked={selectedTasks.has(task._id)}
+                                onTaskEdit={setEditableTask}
                             />
                         )
                     })}
@@ -167,6 +201,14 @@ function ToDo() {
                     <TaskModal
                         onCancel={() => setIsAddTaskModalOpen(false)}
                         onSave={onAddNewTask}
+                    />
+                }
+
+                {editableTask &&
+                    <TaskModal
+                        onCancel={() => setEditableTask(null)}
+                        onSave={onEditTask}
+                        data={editableTask}
                     />
                 }
 
