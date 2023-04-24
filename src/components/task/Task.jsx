@@ -1,45 +1,75 @@
-import { memo } from 'react';
-import PropTypes from 'prop-types';
-import { Col, Form, Button, Card } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faPen } from '@fortawesome/free-solid-svg-icons';
-import { formatDate } from '../../utils/helpers';
-import styles from './task.module.css'
+import { memo } from "react";
+import PropTypes from "prop-types";
+import { Col, Button, Card, Form } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faTrash,
+    faPenToSquare,
+    faCheck,
+    faHistory
+} from "@fortawesome/free-solid-svg-icons";
+import { formatDate } from "../../utils/helpers";
+import styles from "./task.module.css";
 
 
 function Task(props) {
     const task = props.data;
+
     return (
-        <Col xs={12} sm={6} md={4} lg={3}  >
-            <Card className='mb-2 mt-2'>
+        <Col xs={12} sm={6} md={4} lg={3}>
+            <Card className="mt-2 mb-2">
                 <Card.Body>
-                    <Form.Check 
-                    className={styles.checkBox}
-                    onChange={() => props.onTaskSelect(task._id)}
-                    checked ={props.checked}
+
+                    <Form.Check
+                        className={styles.selectTask}
+                        onChange={() => props.onTaskSelect(task._id)}
+                        checked={props.checked}
                     />
+                    <Card.Title className={`${styles.textElipsis} ${styles.title}`}>{task.title}</Card.Title>
+                    <Card.Text className={styles.textElipsis}>
+                        {task.description}
 
-                    <Card.Title className={styles.textElipsis}>{task.title}</Card.Title>
-                    <Card.Text className={styles.textElipsis}>{task.description}</Card.Text>
-                    <Card.Text>Status: {task.status}</Card.Text>
-                    <Card.Text>Created At: {formatDate(task.created_at)}</Card.Text>
-                    <Card.Text>Deadline: {formatDate(task.date)}</Card.Text>
-                    <div className={styles.delEditButton}>
-                        <Button 
-                        variant="warning"
-                        onClick={()=>props.onTaskEdit(task)}
+                    </Card.Text>
+                    <br />
+                    -----------
+                    <Card.Text className={styles.status}> Status:  {task.status}</Card.Text>
+                    <Card.Text className={styles.status}>Created At:  {formatDate(task.created_at)}</Card.Text>
+                    <Card.Text className={styles.status}>Deadline:  {formatDate(task.date)}</Card.Text>
+                    <div className={styles.actionButtons}>
+
+                        {
+                            task.status === 'active' ?
+                                <Button
+                                    title="Mark as done"
+                                    variant="success"
+                                    onClick={() => props.onStatusChange({ status: 'done', _id: task._id })}>
+                                    <FontAwesomeIcon icon={faCheck} />
+                                </Button> :
+                                <Button
+                                    title="Mark as active"
+                                    variant="info"
+                                    onClick={() => props.onStatusChange({ status: 'active', _id: task._id })}>
+                                    <FontAwesomeIcon icon={faHistory} />
+                                </Button>
+                        }
+                        <Button
+                            title="Edit"
+                            className={styles.actionButton}
+                            variant="warning"
+                            onClick={() => props.onTaskEdit(task)}
                         >
-                            <FontAwesomeIcon icon={faPen} />
+                            <FontAwesomeIcon icon={faPenToSquare} />
                         </Button>
-                        <Button variant="danger"
-                            className={styles.deleteButton}
-                            onClick={() => {
-                                props.onTaskDelete(task._id);
 
-                            }}
 
+
+                        <Button
+                            title="Delete"
+                            variant="danger"
+                            className={styles.actionButton}
+                            onClick={() => props.onTaskDelete(task._id)}
                         >
-                            <FontAwesomeIcon icon={faTrashAlt} />
+                            <FontAwesomeIcon icon={faTrash} />
                         </Button>
                     </div>
                 </Card.Body>
@@ -53,7 +83,7 @@ function Task(props) {
         onTaskSelect: PropTypes.func.isRequired,
         onTaskEdit: PropTypes.func.isRequired,
         checked: PropTypes.bool.isRequired,
-        };
+    };
 }
 
 export default memo(Task);

@@ -1,23 +1,35 @@
-.deleteButton{
+.actionButton{
     margin-left: 10px;
 }
-
-.delEditButton{
-    display: flex;
-    justify-content: right;
-};
-
-.checkBox{
-    width: 20px;
-    height: 20px;
-}  
-
-.checkBox input{
-    cursor: pointer
+.actionButtons{
+display: flex;
+justify-content: right;
 }
-
+.selectTask{
+    width: 18px;
+    height: 18px;
+    margin-bottom: 30px;
+}
+.selectTask input{
+    cursor: pointer;
+}
 .textElipsis{
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+}
+
+.status{
+    color: rgb(4, 131, 48);
+    font-style: oblique; 
+    line-height: 10px;
+  font-weight: 500;
+  
+}
+.title{
+    margin-top: -20px;
+    font-size: 22px;
+    font-style: italic;
+    text-align: center;
+    color: rgb(233, 4, 4);
 }

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Button } from 'react-bootstrap';
+import NavBar from "../NavBar/NavBar";
+import Filters from "../filters/Filters";
 import Task from '../task/Task';
 import styles from './todo.module.css';
 import ConfirmDialog from '../ConfirmDialog';
@@ -15,18 +17,23 @@ function ToDo() {
     const [tasks, setTasks] = useState([]);
     const [selectedTasks, setSelectedTasks] = useState(new Set());
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
-    const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
+    const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);  
     const [editableTask, setEditableTask] = useState(null);
 
+    const getTasks = (filters) => {
+        taskApi.getAll(filters)
+            .then((tasks) => {
+                setTasks(tasks);
+            })
+            .catch((err) => {
+                toast.error(err.message);
+            });
+    };
+
+
     useEffect(() => {
-        taskApi.getAll()
-    .then((tasks) => {
-      setTasks(tasks);
-    })
-    .catch((err) => {
-      toast.error(err.message);
-    });
-  }, []);
+        getTasks();
+    }, []);
 
     const onAddNewTask = (newTask) => {
         taskApi.add(newTask)
@@ -114,7 +121,7 @@ function ToDo() {
         setSelectedTasks(new Set());
     };
 
-    //let newTaskTitle = "";
+
 
     const onEditTask = (editedTask) => {
         taskApi
@@ -128,6 +135,10 @@ function ToDo() {
             });
     };
 
+    const onFilter = (filters) => {
+        getTasks(filters);
+    };
+
     return (
         <div>
             <Container>
@@ -139,30 +150,38 @@ function ToDo() {
 
                     </Col>
                 </Row>
+                <Row className={styles.navBar}>
+                    <NavBar />
+                </Row>
 
-                <Row className="justify-content-center m-3" >
-                    <Col xs="6" sm="4" md="3">
+                <Row className=" mb-3 mt-3 " >
+                    <Col xs="8" sm="4" md="3">
 
 
-                        <Button
+                        <Button className=" mb-1 mt-1 "
                             variant="success"
                             onClick={() => setIsAddTaskModalOpen(true)}
-
                         >
                             Add new task
                         </Button>
                     </Col>
 
-                    <Col xs="6" sm="4" md="3">
-                        <Button variant="warning" onClick={selectAllTasks}>
+                    <Col xs="8" sm="4" md="3">
+                        <Button className=" mb-1 mt-1 "
+                            variant="warning"
+                            onClick={selectAllTasks}>
                             Select all
                         </Button>
                     </Col>
-                    <Col xs="6" sm="4" md="3">
-                        <Button variant="secondary" onClick={resetSelectedTasks}>
+                    <Col xs="8" sm="4" md="3">
+                        <Button className=" mb-1 mt-1"
+                            variant="secondary" onClick={resetSelectedTasks}>
                             Reset selected
                         </Button>
                     </Col>
+                </Row>
+                <Row>
+                    <Filters onFilter={onFilter} />
                 </Row>
 
                 <Row>
@@ -174,6 +193,7 @@ function ToDo() {
                                 onTaskDelete={onTaskDelete}
                                 onTaskSelect={onTaskSelect}
                                 checked={selectedTasks.has(task._id)}
+                                onStatusChange={onEditTask}
                                 onTaskEdit={setEditableTask}
                             />
                         )

@@ -1,4 +1,7 @@
 
+body{
+  background-color: rgb(231, 247, 247);
+}
 main{
   max-width: 1440px;
   margin: 0 auto;
@@ -8,18 +11,12 @@ main{
 margin-top: 20px;
 margin-bottom: 10px;
 text-align: center;
+font-style: italic;
+font-size: 80px;
+font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+color: rgb(16, 136, 22) ;
 }
 
-.counter{
-  text-align: center;
-}
-.counter button{
-  margin: 20px;
-}
-
-.counter h3{
-  color: red;
-}
 
 
 
