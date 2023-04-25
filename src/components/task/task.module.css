@@ -1,0 +1,17 @@
+.deleteButton{
+    margin-left: 10px;
+}
+
+.delEditButton{
+    display: flex;
+    justify-content: right;
+};
+
+.checkBox{
+    width: 20px;
+    height: 20px;
+}  
+
+.checkBox input{
+    cursor: pointer
+}
