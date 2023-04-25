@@ -14,11 +14,11 @@ export default class TaskApi {
 
         if (body !== null) {
             req.body = JSON.stringify(body);
-        }
+        };
         let url = taskApiUrl
         if (params) {
             url += '/' + params
-        }
+        };
 
         if (filters) {
             let query = '?';
@@ -30,7 +30,7 @@ export default class TaskApi {
                     query += `${key}=${value}&`;
                 });
             url += query;
-        }
+        };
 
 
         return fetch(url, req)
@@ -41,7 +41,7 @@ export default class TaskApi {
                 }
                 return data;
             });
-    }
+    };
     getAll(filters) {
         return this.#request("GET", { filters: filters });
     };
@@ -59,5 +59,5 @@ export default class TaskApi {
 
     deleteMany(taskIds) {
         return this.#request("PATCH", { body: { tasks: taskIds } });
-    }
+    };
 }

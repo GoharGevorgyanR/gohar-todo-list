@@ -2,12 +2,7 @@ import { memo } from "react";
 import PropTypes from "prop-types";
 import { Col, Button, Card, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faTrash,
-    faPenToSquare,
-    faCheck,
-    faHistory
-} from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faPenToSquare, faCheck, faHistory } from "@fortawesome/free-solid-svg-icons";
 import { formatDate } from "../../utils/helpers";
 import styles from "./task.module.css";
 
@@ -61,8 +56,6 @@ function Task(props) {
                             <FontAwesomeIcon icon={faPenToSquare} />
                         </Button>
 
-
-
                         <Button
                             title="Delete"
                             variant="danger"
@@ -75,15 +68,15 @@ function Task(props) {
                 </Card.Body>
             </Card>
         </Col>
-    )
-
-    Task.propTypes = {
-        data: PropTypes.object.isRequired,
-        onTaskDelete: PropTypes.func.isRequired,
-        onTaskSelect: PropTypes.func.isRequired,
-        onTaskEdit: PropTypes.func.isRequired,
-        checked: PropTypes.bool.isRequired,
-    };
+    );
 }
+
+Task.propTypes = {
+    data: PropTypes.object.isRequired,
+    onTaskDelete: PropTypes.func.isRequired,
+    onTaskSelect: PropTypes.func.isRequired,
+    onTaskEdit: PropTypes.func.isRequired,
+    checked: PropTypes.bool.isRequired,
+};
 
 export default memo(Task);

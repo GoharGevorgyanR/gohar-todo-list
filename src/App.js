@@ -8,14 +8,12 @@ import ToDo from './components/todo/ToDo';
 
 
 function App() {
-  return ( 
+  return (
 
-    <main>   
-           <ToDo/>  
-           {/* <Counter/> */}
+    <main>
+      <ToDo />
+    </main>
 
-    </main> 
-    
   );
 }
 

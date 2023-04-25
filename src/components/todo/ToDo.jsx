@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import NavBar from "../NavBar/NavBar";
+import NavBar from "../navBar/NavBar";
 import Filters from "../filters/Filters";
 import Task from '../task/Task';
 import styles from './todo.module.css';
@@ -17,7 +17,7 @@ function ToDo() {
     const [tasks, setTasks] = useState([]);
     const [selectedTasks, setSelectedTasks] = useState(new Set());
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
-    const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);  
+    const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
     const [editableTask, setEditableTask] = useState(null);
 
     const getTasks = (filters) => {
@@ -145,23 +145,20 @@ function ToDo() {
                 <Row>
                     <Col>
                         <div className="title" >
-                            <h2>To Do List</h2>
+                            <h1>To Do List</h1>
                         </div>
 
                     </Col>
                 </Row>
                 <Row className={styles.navBar}>
-                    <NavBar />
+                    <NavBar/>
                 </Row>
 
                 <Row className=" mb-3 mt-3 " >
                     <Col xs="8" sm="4" md="3">
-
-
                         <Button className=" mb-1 mt-1 "
                             variant="success"
-                            onClick={() => setIsAddTaskModalOpen(true)}
-                        >
+                            onClick={() => setIsAddTaskModalOpen(true)}>
                             Add new task
                         </Button>
                     </Col>
@@ -201,26 +198,25 @@ function ToDo() {
                 </Row>
 
                 <Button
-                    className={styles.deleteSelected}
-                    variant="danger"
-                    onClick={toggleConfirmDialog}
-                    disabled={!selectedTasks.size}
-                >
+                    className = {styles.deleteSelected}
+                    variant = "danger"
+                    onClick = {toggleConfirmDialog}
+                    disabled = {!selectedTasks.size}>
                     Delete selected
                 </Button>
 
                 {isConfirmDialogOpen &&
                     <ConfirmDialog
-                        tasksCount={selectedTasks.size}
-                        onCancel={toggleConfirmDialog}
-                        onSubmit={deleteSelectedTasks} />
+                        tasksCount = {selectedTasks.size}
+                        onCancel = {toggleConfirmDialog}
+                        onSubmit = {deleteSelectedTasks} />
 
 
                 }
                 {isAddTaskModalOpen &&
                     <TaskModal
-                        onCancel={() => setIsAddTaskModalOpen(false)}
-                        onSave={onAddNewTask}
+                        onCancel = {() => setIsAddTaskModalOpen(false)}
+                        onSave = {onAddNewTask}
                     />
                 }
 
