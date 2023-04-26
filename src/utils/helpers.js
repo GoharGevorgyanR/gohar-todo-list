@@ -1,4 +1,15 @@
 
- export function idGenerator() {
-    return Math.random().toString(32) + Math.random().toString(32);
+export function formatDate(date) {
+    if (date instanceof Date) {
+        return date.toISOString().slice(0, 10);
+    }
+    if(typeof date === "string"){
+        return date.slice(0, 10);
+    }
+   return "";
 }
+
+
+
+
+
