@@ -1,6 +1,8 @@
 
 
-const taskApiUrl = process.env.REACT_APP_API_URL + "/task";
+//const taskApiUrl = process.env.REACT_APP_API_URL + "/task";
+const taskApiUrl = 'http://localhost:3001/task'
+
 
 export default class TaskApi {
     #request(method, data = {}) {
@@ -14,10 +16,14 @@ export default class TaskApi {
 
         if (body !== null) {
             req.body = JSON.stringify(body);
+        
         };
+
+
         let url = taskApiUrl
         if (params) {
             url += '/' + params
+        
         };
 
         if (filters) {
@@ -30,34 +36,38 @@ export default class TaskApi {
                     query += `${key}=${value}&`;
                 });
             url += query;
+        
         };
 
 
-        return fetch(url, req)
-            .then((result) => result.json())
-            .then((data) => {
-                if (data.error) {
-                    throw data.error;
-                }
-                return data;
-            });
-    };
-    getAll(filters) {
-        return this.#request("GET", { filters: filters });
-    };
+        return   fetch(url, req)
+        .then((result) => result.json())
+        .then((data) => {
+            if (data.error) {
+                throw data.error;
+            }
+            return data;
+        });
 
-    add(task) {
-        return this.#request("POST", { body: task });
-    };
+};
+getAll(filters) {
+    return this.#request("GET", { filters: filters });
+};
 
-    update(editedTask) {
-        return this.#request("PUT", { body: editedTask, params: editedTask._id });
-    };
-    delete(taskId) {
-        return this.#request("DELETE", { params: taskId });
-    };
+getSingle(taskId) {
+    return this.#request("GET", { params: taskId });
+};
+add(task) {
+    return this.#request("POST", { body: task });
+};
+update(editedTask) {
+    return this.#request("PUT", { body: editedTask, params: editedTask._id });
+};
+delete(taskId) {
+    return this.#request("DELETE", { params: taskId });
+};
 
-    deleteMany(taskIds) {
-        return this.#request("PATCH", { body: { tasks: taskIds } });
-    };
+deleteMany(taskIds) {
+    return this.#request("PATCH", { body: { tasks: taskIds } });
 }
+};

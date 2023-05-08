@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import NavBar from "../navBar/NavBar";
-import Filters from "../filters/Filters";
-import Task from '../task/Task';
+import Filters from "../../components/filters/Filters";
+import Task from '../../components/task/Task';
 import styles from './todo.module.css';
-import ConfirmDialog from '../ConfirmDialog';
-import TaskModal from '../taskModal/TaskModal';
+import ConfirmDialog from '../../components/ConfirmDialog';
+import TaskModal from '../../components/taskModal/TaskModal';
 import TaskApi from '../../api/taskApi';
 
 
@@ -122,12 +121,16 @@ function ToDo() {
     };
 
 
-
     const onEditTask = (editedTask) => {
         taskApi
             .update(editedTask)
             .then((task) => {
+                console.log("task", task);
+                const newTasks = [...tasks];
+                const foundIndex = newTasks.findIndex((t) => t._id === task._id);
+                newTasks[foundIndex] = task;
                 toast.success(`Tasks havs been updated successfully!`);
+                setTasks(newTasks);
                 setEditableTask(null);
             })
             .catch((err) => {
@@ -151,11 +154,11 @@ function ToDo() {
                     </Col>
                 </Row>
                 <Row className={styles.navBar}>
-                    <NavBar/>
+                    
                 </Row>
 
-                <Row className=" mb-3 mt-3 " >
-                    <Col xs="8" sm="4" md="3">
+                <Row className=" mb-3 mt-3" >
+                    <Col xs="6" sm="5" md="3">
                         <Button className=" mb-1 mt-1 "
                             variant="success"
                             onClick={() => setIsAddTaskModalOpen(true)}>
@@ -163,19 +166,34 @@ function ToDo() {
                         </Button>
                     </Col>
 
-                    <Col xs="8" sm="4" md="3">
-                        <Button className=" mb-1 mt-1 "
+                    <Col xs="6" sm="5" md="3">
+                        <Button className=" mb-1 mt-1"
                             variant="warning"
                             onClick={selectAllTasks}>
                             Select all
                         </Button>
                     </Col>
-                    <Col xs="8" sm="4" md="3">
+                    <Col xs="6" sm="5" md="3">
                         <Button className=" mb-1 mt-1"
                             variant="secondary" onClick={resetSelectedTasks}>
                             Reset selected
                         </Button>
                     </Col>
+
+
+                    <Col xs="6" sm="5" md="3">
+                        <Button className=" mb-1 mt-1"
+                            // className = {styles.deleteSelected}
+                            variant="danger"
+                            onClick={toggleConfirmDialog}
+                            disabled={!selectedTasks.size}>
+                            Delete selected
+                        </Button>
+                    </Col>
+
+
+
+
                 </Row>
                 <Row>
                     <Filters onFilter={onFilter} />
@@ -197,26 +215,16 @@ function ToDo() {
                     })}
                 </Row>
 
-                <Button
-                    className = {styles.deleteSelected}
-                    variant = "danger"
-                    onClick = {toggleConfirmDialog}
-                    disabled = {!selectedTasks.size}>
-                    Delete selected
-                </Button>
-
                 {isConfirmDialogOpen &&
                     <ConfirmDialog
-                        tasksCount = {selectedTasks.size}
-                        onCancel = {toggleConfirmDialog}
-                        onSubmit = {deleteSelectedTasks} />
-
-
+                        tasksCount={selectedTasks.size}
+                        onCancel={toggleConfirmDialog}
+                        onSubmit={deleteSelectedTasks} />
                 }
                 {isAddTaskModalOpen &&
                     <TaskModal
-                        onCancel = {() => setIsAddTaskModalOpen(false)}
-                        onSave = {onAddNewTask}
+                        onCancel={() => setIsAddTaskModalOpen(false)}
+                        onSave={onAddNewTask}
                     />
                 }
 
@@ -228,7 +236,7 @@ function ToDo() {
                     />
                 }
 
-                <ToastContainer
+                {/* <ToastContainer
                     position="bottom-left"
                     autoClose={3000}
                     hideProgressBar={false}
@@ -239,7 +247,7 @@ function ToDo() {
                     draggable
                     pauseOnHover
                     theme="light"
-                />
+                /> */}
 
             </Container>
 

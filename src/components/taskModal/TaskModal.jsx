@@ -4,6 +4,7 @@ import { Form, Button, Modal } from 'react-bootstrap';
 import DatePicker from "react-datepicker";
 import PropTypes from 'prop-types';
 import { formatDate } from '../../utils/helpers';
+// import {truncateText} from '../../utils/helpers';
 import styles from './taskModal.module.css';
 
 
@@ -65,7 +66,7 @@ function TaskModal(props) {
   return (
     <Modal show={true} onHide={props.onCancel}>
       <Modal.Header closeButton>
-        <Modal.Title>Add new task</Modal.Title>
+        <Modal.Title> {props.data ? 'Task edit' : 'Add new task'}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
