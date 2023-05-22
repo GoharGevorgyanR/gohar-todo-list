@@ -1,73 +1,32 @@
 
-
+import Api from './api';
 //const taskApiUrl = process.env.REACT_APP_API_URL + "/task";
 const taskApiUrl = 'http://localhost:3001/task'
 
 
-export default class TaskApi {
-    #request(method, data = {}) {
-        const { body, params, filters } = data;
-        const req = {
-            method: method,
-            headers: {
-                "Content-Type": "application/json",
-            },
-        };
+export default class TaskApi extends Api{
+    constructor(){
+      super(taskApiUrl);
+    }
 
-        if (body !== null) {
-            req.body = JSON.stringify(body);
-        
-        };
-
-
-        let url = taskApiUrl
-        if (params) {
-            url += '/' + params
-        
-        };
-
-        if (filters) {
-            let query = '?';
-            Object.entries(filters)
-                .forEach(([key, value]) => {
-                    if (!value) {
-                        return;
-                    }
-                    query += `${key}=${value}&`;
-                });
-            url += query;
-        
-        };
-
-
-        return   fetch(url, req)
-        .then((result) => result.json())
-        .then((data) => {
-            if (data.error) {
-                throw data.error;
-            }
-            return data;
-        });
-
-};
 getAll(filters) {
-    return this.#request("GET", { filters: filters });
+    return this.request("GET", {filters: filters});
 };
 
 getSingle(taskId) {
-    return this.#request("GET", { params: taskId });
+    return this.request("GET", {params: taskId});
 };
 add(task) {
-    return this.#request("POST", { body: task });
+    return this.request("POST", {body: task});
 };
 update(editedTask) {
-    return this.#request("PUT", { body: editedTask, params: editedTask._id });
+    return this.request("PUT", {body: editedTask, params: editedTask._id});
 };
 delete(taskId) {
-    return this.#request("DELETE", { params: taskId });
+    return this.request("DELETE", {params: taskId});
 };
 
 deleteMany(taskIds) {
-    return this.#request("PATCH", { body: { tasks: taskIds } });
+    return this.request("PATCH", {body: {tasks: taskIds}});
 }
 };

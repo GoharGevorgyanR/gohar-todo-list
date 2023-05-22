@@ -1,29 +1,44 @@
-import { memo } from "react";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import {NavLink} from "react-router-dom";
-import styles from './navBar.module.css';
 
-const activeLinkClassName = ({ isActive }) => isActive ? styles.active : '';
+import { memo } from "react";
+import { NavLink } from "react-router-dom";
+import styles from './navBar.module.css';
+// import {useSelector} from 'react-redux';
+
+
+
+const activeLinkClassName = ({ isActive }) => {
+  const classes = ['nav-link'];
+  if (isActive) {
+    classes.push(styles.active);
+  }
+  return classes.join(' ');
+};
 
 function NavBar() {
+  // const count  = useSelector((store)=>store.counter.value);
   return (
-    <Navbar bg="0.3" expand="sm" >
-      <Container fluid>
-        <NavLink to="/" className={activeLinkClassName}>
-          Todo</NavLink>
-        <Navbar.Toggle aria-controls="navbarScroll" />
-        <Navbar.Collapse id="navbarScroll">
-          <Nav className="me-auto my-2 my-lg-0">
-            <NavLink to="/about" className={activeLinkClassName}>About</NavLink>
-            <NavLink to="/contact" className={activeLinkClassName}>Contact us</NavLink>
-          </Nav>
 
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <div className="container-fluid">
+        <NavLink to="/" className={activeLinkClassName}>Todo</NavLink>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <NavLink to="/about" className={activeLinkClassName}>About</NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink to="/contact" className={activeLinkClassName}>Contact us</NavLink>
+              {/* <h3> Counte: {count}</h3> */}
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+
   );
 }
-
 export default memo(NavBar);

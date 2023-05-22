@@ -8,7 +8,9 @@ import styles from './todo.module.css';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import TaskModal from '../../components/taskModal/TaskModal';
 import TaskApi from '../../api/taskApi';
+import { useDispatch } from 'react-redux';
 
+import { setLoader } from "../../redux/reducers/isLoading"
 
 const taskApi = new TaskApi();
 
@@ -18,23 +20,43 @@ function ToDo() {
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
     const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
     const [editableTask, setEditableTask] = useState(null);
+    
+
+
+    const dispatch = useDispatch();
+
+
 
     const getTasks = (filters) => {
+        dispatch(setLoader(true));
         taskApi.getAll(filters)
             .then((tasks) => {
                 setTasks(tasks);
             })
             .catch((err) => {
                 toast.error(err.message);
-            });
+            })
+            .finally(() => {
+                dispatch(setLoader(false));
+            }, [dispatch]);
+            
     };
 
-
+   
+    
+    
     useEffect(() => {
         getTasks();
+         // eslint-disable-next-line
     }, []);
 
+    // useEffect(() => {
+    //     dispatch tasks.length
+    // }, [tasks.length]);
+
+
     const onAddNewTask = (newTask) => {
+        dispatch(setLoader(true));
         taskApi.add(newTask)
             .then((task) => {
                 const tasksCopy = [...tasks];
@@ -42,31 +64,32 @@ function ToDo() {
                 setTasks(tasksCopy);
                 setIsAddTaskModalOpen(false);
                 toast.success('The task has been added successfully!');
-
             })
             .catch((err) => {
                 toast.error(err.message);
-            });
+            })
+            .finally(() => dispatch(setLoader(false)));;
+
     };
 
     const onTaskDelete = (taskId) => {
+        dispatch(setLoader(true));
         taskApi
             .delete(taskId)
             .then(() => {
                 const newTasks = tasks.filter((task) => task._id !== taskId);
                 setTasks(newTasks);
-
                 if (selectedTasks.has(taskId)) {
                     const newSelectedTasks = new Set(selectedTasks);
                     newSelectedTasks.delete(taskId);
                     setSelectedTasks(newSelectedTasks);
                 }
-
                 toast.success("The task has been deleted successfully!");
             })
             .catch((err) => {
                 toast.error(err.message);
-            });
+            })
+            .finally(() => dispatch(setLoader(false)));;
     };
 
     const onTaskSelect = (taskId) => {
@@ -80,8 +103,9 @@ function ToDo() {
         setSelectedTasks(selectedTasksCopy);
     };
 
-    const deleteSelectedTasks = () => {
 
+    const deleteSelectedTasks = () => {
+        dispatch(setLoader(true));
         taskApi
             .deleteMany([...selectedTasks])
             .then(() => {
@@ -100,28 +124,26 @@ function ToDo() {
             })
             .catch((err) => {
                 toast.error(err.message);
-            });
-
-
+            })
+            .finally(() => dispatch(setLoader(false)));;
         setIsConfirmDialogOpen(false);
     };
 
     const toggleConfirmDialog = () => {
         setIsConfirmDialogOpen(!isConfirmDialogOpen)
-
     };
-
     const selectAllTasks = () => {
         const taskIds = tasks.map((task) => task._id);
         setSelectedTasks(new Set(taskIds));
     };
-
     const resetSelectedTasks = () => {
         setSelectedTasks(new Set());
     };
 
 
+
     const onEditTask = (editedTask) => {
+        dispatch(setLoader(true));
         taskApi
             .update(editedTask)
             .then((task) => {
@@ -135,9 +157,10 @@ function ToDo() {
             })
             .catch((err) => {
                 toast.error(err.message);
-            });
+              })
+              .finally(()=>dispatch(setLoader(false)));;
+            
     };
-
     const onFilter = (filters) => {
         getTasks(filters);
     };
@@ -154,7 +177,7 @@ function ToDo() {
                     </Col>
                 </Row>
                 <Row className={styles.navBar}>
-                    
+
                 </Row>
 
                 <Row className=" mb-3 mt-3" >
@@ -183,7 +206,6 @@ function ToDo() {
 
                     <Col xs="6" sm="5" md="3">
                         <Button className=" mb-1 mt-1"
-                            // className = {styles.deleteSelected}
                             variant="danger"
                             onClick={toggleConfirmDialog}
                             disabled={!selectedTasks.size}>
@@ -236,19 +258,6 @@ function ToDo() {
                     />
                 }
 
-                {/* <ToastContainer
-                    position="bottom-left"
-                    autoClose={3000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick={false}
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
-                /> */}
-
             </Container>
 
         </div>
@@ -256,4 +265,4 @@ function ToDo() {
 }
 
 
-export default ToDo
+export default ToDo;

@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect, useEffect, memo } from "react";
+import { useState, useLayoutEffect, useEffect, memo, useRef } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Modal } from 'react-bootstrap';
 import DatePicker from "react-datepicker";
@@ -14,6 +14,11 @@ function TaskModal(props) {
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date());
   const [isTitleValid, setIsTitleValid] = useState(false);
+  const titleRef = useRef(null);
+
+  useEffect(()=>{
+    titleRef.current.focus();
+  },[])
 
   useEffect(() => {
     const { data } = props;
@@ -75,6 +80,7 @@ function TaskModal(props) {
           className={`${!isTitleValid ? styles.invalid : ''} mb-2 `}
           value={title}
           onChange={onTitleChange}
+          ref = {titleRef}
         />
         <Form.Control as="textarea" rows={4}
           className='mb-2'
