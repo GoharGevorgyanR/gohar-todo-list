@@ -47,7 +47,6 @@ const initialOptionFilters = {
 function Filters(props) {
   const [search, setSearch] = useState('');
   const [optionFilters, setOptionFilters] = useState(initialOptionFilters);
-
   const [dateFilters, setDateFilters] = useState(initialDateFilters);
 
   const resetFilters = () => {
@@ -127,8 +126,9 @@ function Filters(props) {
             <Row>
               {dateOptions.map((dateOption) => {
                 const dateValue = dateFilters[dateOption.value];
+
                 return (
-                  <Col sm={6} md={4} lg={3}
+                  <Col xs={12} sm={6} md={6} lg={3}
                     className="text-center"
                     key={dateOption.label}
                   >

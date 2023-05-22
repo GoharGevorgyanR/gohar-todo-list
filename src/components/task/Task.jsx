@@ -4,6 +4,7 @@ import { Col, Button, Card, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPenToSquare, faCheck, faHistory } from "@fortawesome/free-solid-svg-icons";
 import { formatDate } from "../../utils/helpers";
+import { Link } from 'react-router-dom';
 import styles from "./task.module.css";
 
 
@@ -30,6 +31,9 @@ function Task(props) {
                     <Card.Text className={styles.status}> Status:  {task.status}</Card.Text>
                     <Card.Text className={styles.status}>Created At:  {formatDate(task.created_at)}</Card.Text>
                     <Card.Text className={styles.status}>Deadline:  {formatDate(task.date)}</Card.Text>
+                    <Link to={`/task/${task._id}`}>
+                        <Card.Text>Show details</Card.Text>
+                    </Link>
                     <div className={styles.actionButtons}>
 
                         {

@@ -1,9 +1,10 @@
-import { useState, useLayoutEffect, useEffect, memo } from "react";
+import { useState, useLayoutEffect, useEffect, memo, useRef } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Modal } from 'react-bootstrap';
 import DatePicker from "react-datepicker";
 import PropTypes from 'prop-types';
 import { formatDate } from '../../utils/helpers';
+// import {truncateText} from '../../utils/helpers';
 import styles from './taskModal.module.css';
 
 
@@ -13,6 +14,11 @@ function TaskModal(props) {
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date());
   const [isTitleValid, setIsTitleValid] = useState(false);
+  const titleRef = useRef(null);
+
+  useEffect(()=>{
+    titleRef.current.focus();
+  },[])
 
   useEffect(() => {
     const { data } = props;
@@ -65,7 +71,7 @@ function TaskModal(props) {
   return (
     <Modal show={true} onHide={props.onCancel}>
       <Modal.Header closeButton>
-        <Modal.Title>Add new task</Modal.Title>
+        <Modal.Title> {props.data ? 'Task edit' : 'Add new task'}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -74,6 +80,7 @@ function TaskModal(props) {
           className={`${!isTitleValid ? styles.invalid : ''} mb-2 `}
           value={title}
           onChange={onTitleChange}
+          ref = {titleRef}
         />
         <Form.Control as="textarea" rows={4}
           className='mb-2'

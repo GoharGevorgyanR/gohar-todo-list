@@ -1,0 +1,9 @@
+.active {
+    color: rgb(26, 87, 7) !important;
+font-weight: 500;
+    text-decoration: underline;
+}
+.style{
+    margin-left: 20px;   
+    
+}
